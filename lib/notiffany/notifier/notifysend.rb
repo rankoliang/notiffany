@@ -15,10 +15,10 @@ module Notiffany
       DEFAULTS = {
         t: 3000, # Default timeout is 3000ms
         h: "int:transient:1" # Automatically close the notification
-      }
+      }.freeze
 
       # Full list of options supported by notify-send.
-      SUPPORTED = [:u, :t, :i, :c, :h]
+      SUPPORTED = %i[u t i c h].freeze
 
       private
 
@@ -28,7 +28,7 @@ module Notiffany
       end
 
       def _supported_hosts
-        %w(linux linux-gnu freebsd openbsd sunos solaris)
+        %w[linux linux-gnu freebsd openbsd sunos solaris]
       end
 
       def _check_available(_opts = {})
@@ -36,7 +36,7 @@ module Notiffany
 
         return true unless which.nil? || which.empty?
 
-        fail UnavailableError, "libnotify-bin package is not installed"
+        raise UnavailableError, "libnotify-bin package is not installed"
       end
 
       # Shows a system notification.
@@ -69,7 +69,7 @@ module Notiffany
       # @return [String] the notify-send urgency
       #
       def _notifysend_urgency(type)
-        { failed: "normal", pending: "low" }.fetch(type, "low")
+        { failed: "critical", pending: "low" }.fetch(type, "low")
       end
 
       # Builds a shell command out of a command string and option hash.
